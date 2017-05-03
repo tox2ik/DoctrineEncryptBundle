@@ -169,8 +169,18 @@ class DoctrineEncryptSubscriber implements EventSubscriber {
      */
     public function preFlush(PreFlushEventArgs $preFlushEventArgs) {
         $unitOfWork = $preFlushEventArgs->getEntityManager()->getUnitOfWork();
-        foreach($unitOfWork->getScheduledEntityInsertions() as $entity) {
-            $this->processFields($entity);
+        foreach ($unitOfWork->getIdentityMap() as $className => $entities) {
+            $class = $preFlushEventArgs->getEntityManager()->getClassMetadata($className);
+            if ($class->isReadOnly) {
+                continue;
+            }
+
+            foreach ($entities as $entity) {
+                if ($entity instanceof Proxy && !$entity->__isInitialized__) {
+                    continue;
+                }
+                $this->processFields($entity);
+            }
         }
     }
 
