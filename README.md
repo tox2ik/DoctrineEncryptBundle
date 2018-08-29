@@ -1,3 +1,9 @@
+# Fork
+
++ openssl
++ propertyAccessor
+
+--------
 #DoctrineEncryptBundle
 
 Bundle allows to create doctrine entities with fields that will be protected with 
